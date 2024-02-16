@@ -26,26 +26,6 @@ export class ListComponent {
       return this.#setListItems.set(this.#parseItems());
   }
 
-  public updateItemCheckbox(newItem: {id: string, checked: boolean}){
-    this.#setListItems.update((oldValue: IListItems[]) =>{
-      oldValue.filter( res =>{
-        if(res.id === newItem.id){
-          res.checked = newItem.checked;
-          return res;
-        }
-        return res;
-      })
-      return oldValue;
-    });
-
-    return localStorage.setItem('my-list', JSON.stringify(this.#setListItems()));
-  }
-
-  public deleteAllItems(){
-    localStorage.removeItem('@my-list');
-    return this.#setListItems.set(this.#parseItems());
-  }
-
   public listItemsStage(value: 'pending' | 'completed'){
     return this.getListItems().filter((res: IListItems) => {
       if(value === 'pending'){
@@ -58,5 +38,48 @@ export class ListComponent {
     })
   }
 
+  public updateItemCheckbox(newItem: {id: string, checked: boolean}){
+    this.#setListItems.update((oldValue: IListItems[]) =>{
+      oldValue.filter( res =>{
+        if(res.id === newItem.id){
+          res.checked = newItem.checked;
+          return res;
+        }
+        return res; 
+      })
+      return oldValue;
+    });
+    return localStorage.setItem('@my-list', JSON.stringify(this.#setListItems()))
+  }
+
+  public deleteAllItems(){
+    localStorage.removeItem('@my-list');
+    return this.#setListItems.set(this.#parseItems());
+  }
+
+
+  public deleteItem(id: string){
+    this.#setListItems.update((oldValue : IListItems[]) => {
+      return oldValue.filter((res) => res.id !== id)
+    });
+
+    return localStorage.setItem('my-list', JSON.stringify(this.#setListItems()));
+  }
+  
+
+  public updateItemText(newItem: {id: string, value: string}){
+
+    this.#setListItems.update((oldValue: IListItems[]) =>{
+      oldValue.filter( res =>{
+        if(res.id === newItem.id){
+          res.value = newItem.value;
+          return res;
+        }
+        return res; 
+      })
+      return oldValue;
+    });
+    return localStorage.setItem('@my-list', JSON.stringify(this.#setListItems()))
+  }
   
 }
