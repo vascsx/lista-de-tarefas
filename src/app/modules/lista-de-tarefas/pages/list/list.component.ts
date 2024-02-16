@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { InputAddItemComponent } from '../../components/input-add-item/input-add-item.component';
 import { IListItems } from '../../interface/IListItems.interface';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-list',
@@ -12,14 +13,17 @@ import { IListItems } from '../../interface/IListItems.interface';
 export class ListComponent {
   public addItem = signal(true);
 
-  #setListItesms = signal<IListItems[]>([this.#parseItems()]);
-  getListItems = this.#setListItesms.asReadonly();
+  #setListItems = signal<IListItems[]>(this.#parseItems());
+  public getListItems = this.#setListItems.asReadonly();
 
-  #parseItems (){
+  #parseItems(){
     return JSON.parse(localStorage.getItem('@my-list') || '[]');
   }
-  public getInputAndAddItem (value : IListItems) {
+  public getInputAndAddItem (value: IListItems){
     localStorage.setItem(
-      '@mylist', JSON.stringify([value]));
+      '@my-list', JSON.stringify([...this.#setListItems(), value]));
+
+      return this.#setListItems.set(this.#parseItems());
   }
+
 }
